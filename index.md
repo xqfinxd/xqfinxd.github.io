@@ -12,12 +12,12 @@ Click [here](https://github.com/xqfinxd) to visit my github.
 # Notebook
 ...
 ## Lanugage attribute
-### std::forward and std::move
-right value and left value. left value can be in both left and right side of '=', and right can only be in right side of '='.
+### ___std::forward and std::move___
+__right value__ and __left value__. __left value__ can be in __both__ left and right side of '=', and __right value__ can __only__ be in right side of '='.
 
 left value reference, a reference of a left value; right value reference, a reference binding in a right value. when right value reference as function paramet, it will be regarded as left value. that's to say reference is left value.
 
-use std::forward keep its value attribute, use std::move transfer value attribute to right value.
+use __std::forward__ keep its value attribute, use __std::move__ transfer value attribute to right value.
 ``` cpp
 #include <iostream>
 
@@ -42,7 +42,7 @@ int main(void) {
 }
 ```
 
-output result
+_output result_
 ``` result
 left value
 left value
@@ -51,7 +51,7 @@ right value
 ```
 
 
-### function object and thread
+### ___function object and thread___
 ``` cpp
 struct MyStruct {
 	int Foo(int loop, int x) {
@@ -86,7 +86,7 @@ int main()
 	return 0;
 }
 ```
-### mysql trap
+### ___mysql trap___
 get data from mysql into local dir with redefine system.
 ``` sql
 mysql -h <IP> -u <NAME> -p -P <PORT> <DATABASENAME> -Nsr -e "select <ATTRIBUTE> from <TABLENAME> where <CONDITION> and <CONDITION>;" >> target.ext
@@ -96,7 +96,7 @@ mysql -h <IP> -u <NAME> -p -P <PORT> <DATABASENAME> -Nsr -e "select <ATTRIBUTE> 
 ```
 +-------+
 -   1   -
--	2   -
+-   2   -
 +-------+
 ```
 3. __-r__ specify that don't transfer other format and keep native data.
@@ -106,6 +106,7 @@ mysql -h <IP> -u <NAME> -p -P <PORT> <DATABASENAME> -Nsr -e "select <ATTRIBUTE> 
 ...
 
 ## Project experience
+### ___D ptr___
 ``` cpp
 //*/Foo.h
 //Foo.h define class Foo and declare class FooPrivateData. use FooPrivateData* represent containing it.
@@ -146,11 +147,26 @@ class BarPrivateData {
 	//do something...
 };
 ```
-### windbg tool
+### ___windbg tool___
 1. load dump file
 2. load symbols files(pdb)
 3. call __.reload__
 4. call __.ecxr__
 5. call __kv__
+
+
+### ___ECS(Entity-Component-System)___
+![OverWatch-ECS](./images/ECS.jpg "OverWatch-ECS")
+what's the 'object_pool<Component>'
+like?
+``` cpp
+using object_pool = std::unique_ptr
+//an array of object pool.
+object_pool<Component>* pools = new object_pool<Component>[kMaxComponent];
+//pool is an array of the same components.
+pools[SomeComponentTypeID] = object_pool<SomeComponent>(new SomeComponent[kPoolSize]);
+SomeComponent* components = static_cast<SomeComponent*>(pools[SomeComponentTypeID].get());
+//...components ops
+```
 
 ...
