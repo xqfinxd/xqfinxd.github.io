@@ -1,6 +1,6 @@
 #include "ModelHelper.h"
 
 int main() {
-	ModelHelper model("D:\\COLLECTIONS\\3D\\idle.fbx");
+	ModelHelper model("E:\\3D\\PLY\\cube_binary.ply");
 	return 0;
 }
