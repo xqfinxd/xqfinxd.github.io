@@ -1,8 +1,14 @@
 #pragma once
+#ifdef DLL_EXPORT
+#define DLL_API __declspec(dllexport)
+#else
+#define DLL_API __declspec(dllimport)
+#endif
 
 #include <vector>
 #include <map>
 #include <memory>
+#include "Texture.h"
 struct vec2 {
 	vec2() : x(0), y(0) {}
 	vec2(const vec2& old) : x(old.x), y(old.y) {}
@@ -77,53 +83,26 @@ public:
 	uint32_t indicesNum = 3;
     std::string name;
 };
-class Texture {
-public:
-    Texture() : width(0), height(0), channel(0), data(nullptr) {}
-    Texture(const Texture& old) : width(old.width), height(old.height), channel(old.channel), data(old.data) {
-    }
-    Texture(const uint8_t* data, int width, int height, int channel) : 
-        width(width), height(height), channel(channel) {
-        this->data = std::shared_ptr<uint8_t[]>(new uint8_t[width * height * channel]);
-        memcpy(this->data.get(), data, sizeof(uint8_t) * width * height * channel);
-    }
-    Texture& operator = (const Texture& old) {
-        width = old.width;
-        height = old.height;
-        channel = old.channel;
-        data = old.data;
-        return *this;
-    }
-    operator bool() {
-        if (!data || width == 0 || height == 0 || channel == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    ~Texture() {
-        if (data != nullptr) {
-        }
-        width = 0;
-        height = 0;
-        channel = 0;
-    }
-    uint32_t width, height, channel;
-    std::shared_ptr<uint8_t[]> data = nullptr;
-};
 
 struct PrivateData;
 
-class __declspec(dllexport) ModelHelper {
+class DLL_API ModelHelper {
 public:
 	ModelHelper();
 	ModelHelper(const ModelHelper& old);
 	ModelHelper(const char* file);
 	~ModelHelper();
+    const std::map<std::string, Texture>& getTextures() const {
+        return textures;
+    }
+    const std::vector<Mesh>& getMeshes() const {
+        return meshes;
+    }
 private:
 	std::unique_ptr<PrivateData> data;
     std::string filename;
 	std::string directory;
+
 	std::vector<Mesh> meshes;
     //key format:MeshName_Type_Index, for example hand_diffus_12
     std::map<std::string, Texture> textures;
