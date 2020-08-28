@@ -102,7 +102,66 @@ mysql -h <IP> -u <NAME> -p -P <PORT> <DATABASENAME> -Nsr -e "select <ATTRIBUTE> 
 3. __-r__ specify that don't transfer other format and keep native data.
 4. __-p__ specify that using password but never give it the password.
 5. __-e__ specify that run the string instead of shell.
+### ___tuple___
 
+when construct tuple with constructor or __std::make_tuple__, all member will perform copy constructor, and if the original variable is temporary, it will be destroy when out of field.
+
+if __return std::tuple(var1, var2, ...)__ , it returns right value reference, use __auto&& varName__ catch it, when acess its member(var1, var2, ...), copy constructor will be call, at last, when varName go out of field, this tuple will destroy with all of its member calling destructor.
+
+codes
+``` cpp
+class A {
+public:
+	A() {
+		std::cout << "construct" << std::endl;
+	}
+	A(const A& a) {
+		std::cout << "left copy" << std::endl;
+	}
+	A(const A&& a) {
+		std::cout << "right copy" << std::endl;
+	}
+	A& operator = (const A& a) {
+		std::cout << "left = " << std::endl;
+		return *this;
+	}
+	A& operator = (const A&& a) {
+		std::cout << "right = " << std::endl;
+		return *this;
+	}
+	~A() {
+		std::cout << "destruct" << std::endl;
+	}
+};
+using cstr = std::tuple<int, std::string, A>;
+
+cstr func(std::string s) {
+	A a = A(); //2
+	return cstr(s.size(), s, std::move(a)); //3
+} //4
+
+int main() {
+	A a; //1
+	{
+		auto&& ret = func("hello");
+		std::cout << std::get<int>(ret) << std::endl; //5
+		std::cout << std::get<std::string>(ret) << std::endl; //6
+		a = std::get<A>(ret); //7
+	} //8
+} //9
+```
+result
+```
+1. construct
+2. construct
+3. right copy
+4. destruct
+5. 5
+6. hello
+7. left =
+8. destruct
+9. destruct
+```
 ...
 
 ## Project experience
